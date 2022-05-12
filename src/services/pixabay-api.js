@@ -1,11 +1,11 @@
-export const fetchImages = name => {
+export const fetchImages = (name, page) => {
   const BASE_URL = 'https://pixabay.com/api/';
   const queryParams = new URLSearchParams({
     key: '25731511-e5f7726e83d52bf5fe5f97cfd',
     q: name,
     image_type: 'photo',
     orientation: 'horizontal',
-    page: 1,
+    page,
     per_page: 12,
   });
 

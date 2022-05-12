@@ -1,3 +1,10 @@
+.Container {
+  display: block;
+  width: 1280px;
+  margin: 0 auto;
+  margin-top: calc(-1 * 15px);
+}
+
 .List {
   display: flex;
   flex-wrap: wrap;

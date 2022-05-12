@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import 'react-notifications/lib/notifications.css';
+import { NotificationManager } from 'react-notifications';
 import PropTypes from 'prop-types';
 import { MdOutlineSearch } from 'react-icons/md';
 import s from './Searchbar.module.css';
@@ -22,7 +24,9 @@ export class Searchbar extends Component {
     e.preventDefault();
 
     if (imgName.trim() === '') {
-      alert('Введите имя картинки');
+      NotificationManager.warning(
+        'Search bar is empty! Please, enter a request.'
+      );
       return;
     }
     onSubmit(imgName);
@@ -35,7 +39,7 @@ export class Searchbar extends Component {
     return (
       <header className={s.Searchbar}>
         <form className={s.Form} onSubmit={this.handleSubmit}>
-          <button type="submit" className={s.Button}>
+          <button type="submit" className={s.Button} aria-label="Search images">
             <MdOutlineSearch size="18" fill="#7a7a7a" />
           </button>
 

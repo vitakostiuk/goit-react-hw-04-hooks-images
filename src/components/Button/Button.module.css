@@ -1,0 +1,13 @@
+.Btn {
+  display: block;
+  margin: 0 auto;
+  margin-top: 30px;
+  background-color: #49b6ff;
+  color: #2a2a2a;
+  border-radius: 3px;
+  border: 1px solid #7a7a7a;
+  width: 120px;
+  height: 35px;
+  cursor: pointer;
+  font-size: 15px;
+}
