@@ -263,7 +263,7 @@ export class App extends Component {
         )}
         {showModal && (
           <Modal onClose={this.toogleModal}>
-            <img src={largeImage} alt={imgName} width="600" />
+            <img src={largeImage} alt={imgName} width="800" />
           </Modal>
         )}
         <NotificationContainer />
