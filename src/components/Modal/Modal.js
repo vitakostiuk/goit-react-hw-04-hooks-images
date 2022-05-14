@@ -34,9 +34,12 @@ export class Modal extends Component {
   };
 
   render() {
+    const { largeImage, imgName } = this.props;
     return createPortal(
       <div className={s.Backdrop} onClick={this.handleBackdropClick}>
-        <div className={s.Modal}>{this.props.children}</div>
+        <div className={s.Modal}>
+          <img src={largeImage} alt={imgName} width="800" />
+        </div>
       </div>,
       modalRoot
     );

@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import s from './Button.module.css';
 
-export const Button = ({ children, onClick, ...allyProps }) => (
+export const Button = ({ onClick, ...allyProps }) => (
   <button type="button" className={s.Btn} onClick={onClick} {...allyProps}>
-    {children}
+    Load more
   </button>
 );
 

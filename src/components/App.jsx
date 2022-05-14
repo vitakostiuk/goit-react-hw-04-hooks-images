@@ -5,6 +5,7 @@ import {
   NotificationContainer,
   NotificationManager,
 } from 'react-notifications';
+import { mapper } from '../utils/mapper';
 import { Searchbar } from './Searchbar';
 import { ImageGallery } from './ImageGallery';
 import { fetchImages } from '../services/pixabay-api';
@@ -33,37 +34,48 @@ export class App extends Component {
 
     if (prevName !== currentName) {
       this.setState({ loading: true, hiddenBtn: true, images: null });
-      fetchImages(currentName, page)
-        .then(images => images.hits)
-        .then(images => {
-          if (images.length === 0) {
-            NotificationManager.warning(`There are not images with such name.`);
-            return this.setState({
-              images: null,
-            });
-          }
-          this.setState({
-            images,
-            hiddenBtn: false,
-          });
-        })
-        .catch(error => this.setState({ error }))
-        .finally(() => this.setState({ loading: false }));
+      this.getImages(prevName, currentName, prevPage, currentPage);
     }
 
     if (prevName === currentName && prevPage !== currentPage) {
       this.setState({ loading: true, hiddenBtn: true });
-      fetchImages(currentName, page)
-        .then(images => images.hits)
-        .then(images => {
-          return this.setState(prevState => ({
-            images: [...prevState.images, ...images],
-            hiddenBtn: false,
-          }));
-        })
-        .catch(error => this.setState({ error }))
-        .finally(() => this.setState({ loading: false }));
+      this.getImages(prevName, currentName, prevPage, currentPage);
     }
+  };
+
+  getImages = (prevName, currentName, prevPage, currentPage) => {
+    return fetchImages(currentName, currentPage)
+      .then(images => images.hits)
+      .then(images => {
+        if (images.length === 0) {
+          NotificationManager.warning(`There are not images with such name.`);
+          return this.setState({
+            images: null,
+          });
+        }
+        if (prevName !== currentName) {
+          this.setStateForFirstRequest(images);
+        }
+        if (prevName === currentName && prevPage !== currentPage) {
+          this.setStateForPagination(images);
+        }
+      })
+      .catch(error => this.setState({ error }))
+      .finally(() => this.setState({ loading: false }));
+  };
+
+  setStateForFirstRequest = data => {
+    return this.setState({
+      images: mapper(data),
+      hiddenBtn: false,
+    });
+  };
+
+  setStateForPagination = data => {
+    return this.setState(prevState => ({
+      images: [...prevState.images, ...mapper(data)],
+      hiddenBtn: false,
+    }));
   };
 
   incrementPage = () => {
@@ -117,14 +129,14 @@ export class App extends Component {
           </div>
         )}
         {!hiddenBtn && (
-          <Button onClick={this.incrementPage} aria-label="Load more">
-            Load more
-          </Button>
+          <Button onClick={this.incrementPage} aria-label="Load more" />
         )}
         {showModal && (
-          <Modal onClose={this.toogleModal}>
-            <img src={largeImage} alt={imgName} width="800" />
-          </Modal>
+          <Modal
+            onClose={this.toogleModal}
+            largeImage={largeImage}
+            imgName={imgName}
+          />
         )}
         <NotificationContainer />
       </>
@@ -263,7 +275,7 @@ export class App extends Component {
         )}
         {showModal && (
           <Modal onClose={this.toogleModal}>
-            <img src={largeImage} alt={imgName} width="600" />
+            <img src={largeImage} alt={imgName} width="800" />
           </Modal>
         )}
         <NotificationContainer />
