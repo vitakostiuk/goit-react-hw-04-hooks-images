@@ -9,10 +9,6 @@ import s from './Searchbar.module.css';
 export const Searchbar = ({ onSubmit }) => {
   const [imgName, setImgName] = useState('');
 
-  // const handleNameChange = e => {
-  //   setImgName(e.currentTarget.value.toLowerCase());
-  // };
-
   const handleSubmit = e => {
     e.preventDefault();
 

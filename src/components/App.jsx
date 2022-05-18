@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import 'react-notifications/lib/notifications.css';
 import { BallTriangle } from 'react-loader-spinner';
 import {
@@ -15,7 +15,7 @@ import s from './App.module.css';
 
 export const App = () => {
   const [imgName, setImgName] = useState('');
-  const [images, setImages] = useState(null);
+  const [images, setImages] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [largeImage, setLargeImage] = useState(null);
   const [page, setPage] = useState(1);
@@ -23,21 +23,20 @@ export const App = () => {
   const [hiddenBtn, setHiddenBtn] = useState(true);
   const [error, setError] = useState(null);
 
-  //first render
   useEffect(() => {
-    setImages(null);
+    if (imgName === '') return;
     setHiddenBtn(true);
 
     const getImages = async () => {
       try {
         setLoading(true);
-        let images = await fetchImages(imgName);
-        images = images.hits;
-        if (images.length === 0) {
+        let data = await fetchImages(imgName, page);
+        data = data.hits;
+        if (data.length === 0) {
           NotificationManager.warning(`There are not images with such name.`);
-          return setImages(null);
+          return setImages([]);
         }
-        setImages(mapper(images));
+        setImages(prevImages => [...prevImages, ...mapper(data)]);
         setHiddenBtn(false);
       } catch (error) {
         setError(error);
@@ -45,32 +44,8 @@ export const App = () => {
         setLoading(false);
       }
     };
-    if (imgName) getImages();
-  }, [imgName]);
-
-  // pagination(load more)
-  useEffect(() => {
-    setHiddenBtn(true);
-
-    const getImages = async () => {
-      try {
-        setLoading(true);
-        let images = await fetchImages(page);
-        images = images.hits;
-        if (images.length === 0) {
-          NotificationManager.warning(`There are not images with such name.`);
-          return setImages(null);
-        }
-        setImages(prevImages => [...prevImages, ...mapper(images)]);
-        setHiddenBtn(false);
-      } catch (error) {
-        setError(error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    if (page !== 1) getImages();
-  }, [page]);
+    getImages();
+  }, [imgName, page]);
 
   const incrementPage = () => {
     setPage(prevPage => prevPage + 1);
@@ -79,6 +54,7 @@ export const App = () => {
   const handleSearchbarSubmit = imgName => {
     setImgName(imgName);
     setPage(1);
+    setImages([]);
     setLoading(false);
   };
 
